@@ -32,9 +32,24 @@ public class MainActivity extends Activity {
 		MainActivity.this.startActivity(new Intent(MainActivity.this, ServerActivity.class));
 	}
 
+	@Override
+	public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+		if (requestCode == 999) {
+			for (String perm : permissions) {
+				if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
+					Toast.makeText(this, "You should grant the permission for query installed apps.", Toast.LENGTH_SHORT);
+				}
+			}
+		}
+	}
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+	if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, "com.android.permission.GET_INSTALLED_APPS"))
+	{
+		ActivityCompat.requestPermissions(this, new String[]{"com.android.permission.GET_INSTALLED_APPS"},999);
+	}
         
         Agent.getInstance().setContext(this.getApplicationContext());
         
